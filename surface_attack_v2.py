@@ -26,7 +26,7 @@ HTTP_TIMEOUT = 5
 DNS_TIMEOUT = 3
 JS_TIMEOUT = 5
 
-USER_AGENT = "AttackSurfaceResearch/1.0"
+USER_AGENT = "SurfaceResearch/1.0"
 
 # ---------------------------------------------------------
 # 공통
@@ -711,10 +711,18 @@ def analyze_javascript_assets(base_url, html):
 
 def collect_browser_observations(page_url):
     observations = []
+    ws_connections = []
+    ws_frames = []
     
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
+        
+        attach_websocket_recorder(
+            page,
+            ws_connections,
+            ws_frames,
+        )
         
         started_at = {}
         
@@ -727,7 +735,7 @@ def collect_browser_observations(page_url):
         def on_response(response):
             request = response.request
             
-            if request.resource_type not in {"fetch", "xhr"}:
+            if request.resource_type not in {"fetch", "xhr", "eventsource"}:
                 return
             
             try:

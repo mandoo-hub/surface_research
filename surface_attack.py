@@ -18,19 +18,56 @@ os.makedirs(
     exist_ok=True
 )
 
-TARGET_DOMAIN = "jusohot.com"
+TARGET_DOMAIN = "shopify.plus"
 
 HTTP_TIMEOUT = 5
 DNS_TIMEOUT = 3
 JS_TIMEOUT = 5
 
-USER_AGENT = "AttackSurfaceResearch/1.0"
+USER_AGENT = "SurfaceResearch/1.0"
 
 # ---------------------------------------------------------
 # 공통
 # ---------------------------------------------------------
 
-DEFA
+DEFAULT_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/154.0.0.0 Safari/537.36"
+    )
+}
+
+
+def normalize_url(base_url, value):
+    if not value:
+        return None
+
+    value = value.strip()
+
+    # javascript:, data:, blob: 등 제외
+    if value.startswith((
+        "javascript:",
+        "data:",
+        "mailto:",
+        "tel:",
+        "ftp:",
+        "irc:",
+        "nntp:",
+        "news:",
+        "telnet:",
+        "mms:",
+        "rtsp:",
+        "callto:",
+        "blob:",
+        "file:"
+    )):
+        return None
+    
+    try:
+        return urljoin(base_url, value)
+    except Exception:
+        return None
 
 # =========================================================
 # DNS

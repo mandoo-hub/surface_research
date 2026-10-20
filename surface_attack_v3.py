@@ -20,13 +20,13 @@ os.makedirs(
     exist_ok=True
 )
 
-TARGET_DOMAIN = "jusohot7.com"
+TARGET_DOMAIN = "shopify.plus"
 
 HTTP_TIMEOUT = 5
 DNS_TIMEOUT = 3
 JS_TIMEOUT = 5
 
-USER_AGENT = "AttackSurfaceResearch/1.0"
+USER_AGENT = "SurfaceResearch/1.0"
 
 # ---------------------------------------------------------
 # 공통
@@ -596,6 +596,10 @@ def extract_api_candidates_from_js(js_text, base_url):
 
         # 일반적인 상대 endpoint
         r"""["'](/[A-Za-z0-9_\-]+/[A-Za-z0-9_\-./{}?=&%]+)["']"""
+        
+        # 백탁 내부의 동적 URL 템플릿
+        r'`((?:https?://|//|/|\./|\.\./)[^`]*\$\{[^}]+\}[^`]*)`'
+        
     ]
 
     for pattern in patterns:
@@ -729,7 +733,7 @@ def attach_websocket_recorder(page, ws_connections, ws_frames):
             else:
                 payload_bytes = len(payload.encode("utf-8"))
                 try:
-                    data = json.lads(payload)
+                    data = json.loads(payload)
                     json_keys = (
                         list(data.keys())
                         if isinstance(data, dict)
@@ -1256,8 +1260,12 @@ def analyze_domain(domain):
 
 if __name__ == "__main__":
 
+    # requests : 웹에 데이터를 요청할 때 가장 널리 쓰이는 파이썬 라이브러리
+    # urllib3 : requests 내부에서 실제로 네트워크 통신을 담당하는 하위 라이브러리
+    # disable_warniings() : 콘솔(터미널)창에 찍히는 각종 경고 메시지를 차단하는 함수
     requests.packages.urllib3.disable_warnings()
 
+    # analyze_domain : main scanner 함수
     result = analyze_domain(
         TARGET_DOMAIN
     )
