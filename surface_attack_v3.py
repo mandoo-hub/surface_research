@@ -20,7 +20,7 @@ os.makedirs(
     exist_ok=True
 )
 
-TARGET_DOMAIN = "shopify.plus"
+TARGET_DOMAIN = "example.com"
 
 HTTP_TIMEOUT = 5
 DNS_TIMEOUT = 3
